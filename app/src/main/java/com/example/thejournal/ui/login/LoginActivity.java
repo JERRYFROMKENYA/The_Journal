@@ -3,18 +3,8 @@ package com.example.thejournal.ui.login;
 import static android.content.ContentValues.TAG;
 
 import android.app.Activity;
-
-import androidx.annotation.NonNull;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -28,24 +18,24 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.thejournal.MainActivity;
-import com.example.thejournal.MainActivity2;
-import com.example.thejournal.ProfileActivity;
-import com.example.thejournal.R;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
-import com.example.thejournal.ui.login.LoginViewModel;
-import com.example.thejournal.ui.login.LoginViewModelFactory;
+import com.example.thejournal.MainActivity;
+import com.example.thejournal.ProfileActivity;
 import com.example.thejournal.databinding.ActivityLoginBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-
-import com.google.firebase.auth.*;
+import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
      FirebaseAuth mAuth= FirebaseAuth.getInstance();
-// ...
-// Initialize Firebase Auth
 
     @Override
     public void onStart() {
@@ -99,17 +89,15 @@ public class LoginActivity extends AppCompatActivity {
         loginViewModel.getLoginResult().observe(this, new Observer<LoginResult>() {
             @Override
             public void onChanged(@Nullable LoginResult loginResult) {
-                if (loginResult == null) {
-                    return;
-                }
-                loadingProgressBar.setVisibility(View.GONE);
-                if (loginResult.getError() != null) {
-                    showLoginFailed(loginResult.getError());
-                }
-                if (loginResult.getSuccess() != null) {
 
-                }
-                setResult(Activity.RESULT_OK);
+                loadingProgressBar.setVisibility(View.GONE);
+//                if (loginResult.getError() != null) {
+//                    showLoginFailed(loginResult.getError());
+//                }
+//                if (loginResult.getSuccess() != null) {
+//
+//                }
+//                setResult(Activity.RESULT_OK);
 
                 //Complete and destroy login activity once successful
                 finish();
@@ -140,8 +128,91 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    loginViewModel.login(usernameEditText.getText().toString(),
-                            passwordEditText.getText().toString());
+
+
+                    usernameEditText.setVisibility(View.INVISIBLE);
+                    passwordEditText.setVisibility(View.INVISIBLE);
+                    loginButton.setVisibility(View.INVISIBLE);
+                    loadingProgressBar.setVisibility(View.INVISIBLE);
+                    JouLogo.setVisibility(View.INVISIBLE);
+                    Slogan.setVisibility(View.INVISIBLE);
+                    WelText.setVisibility(View.INVISIBLE);
+
+
+
+
+
+
+                    loadingProgressBar.setVisibility(View.VISIBLE);
+                    String email=usernameEditText.getText().toString();
+                    String password=passwordEditText.getText().toString();
+                    mAuth.createUserWithEmailAndPassword(email, password)
+                            .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        // Sign up success, update UI with the signed-in user's information
+                                        Log.d(TAG, "createUserWithEmail:success");
+
+                                        FirebaseUser user = mAuth.getCurrentUser();
+                                        updateUiWithSignUp(user);
+                                        Toast.makeText(LoginActivity.this, "Sign Up Success!",
+                                                Toast.LENGTH_SHORT).show();
+                                        finish();
+
+                                    } else {
+                                        // If sign up fails, display a message to the user.
+                                        mAuth.signInWithEmailAndPassword(email, password)
+                                                .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                                        if (task.isSuccessful()) {
+                                                            // Sign in success, update UI with the signed-in user's information
+                                                            Log.d(TAG, "signInWithEmail:success");
+                                                            FirebaseUser user = mAuth.getCurrentUser();
+                                                            loadingProgressBar.setVisibility(View.INVISIBLE);
+//                                                        updateUI(user);
+                                                            Toast.makeText(LoginActivity.this, "Signed In",
+                                                                    Toast.LENGTH_SHORT).show();
+                                                            updateUiWithUser(user);
+                                                            finish();
+                                                        } else {
+                                                            // If sign in fails, display a message to the user.
+                                                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                                                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                                                    Toast.LENGTH_SHORT).show();
+                                                            loadingProgressBar.setVisibility(View.INVISIBLE);
+                                                            loadingProgressBar.setVisibility(View.VISIBLE);
+                                                            usernameEditText.setVisibility(View.VISIBLE);
+                                                            passwordEditText.setVisibility(View.VISIBLE);
+                                                            loginButton.setVisibility(View.VISIBLE);
+                                                            loadingProgressBar.setVisibility(View.VISIBLE);
+                                                            JouLogo.setVisibility(View.VISIBLE);
+                                                            Slogan.setVisibility(View.VISIBLE);
+                                                            WelText.setVisibility(View.VISIBLE);
+
+//                                                        updateUI(null);
+                                                        }
+                                                    }
+                                                });
+                                        Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                                        Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                                Toast.LENGTH_SHORT).show();
+                                        loadingProgressBar.setVisibility(View.INVISIBLE);
+                                        loadingProgressBar.setVisibility(View.VISIBLE);
+                                        usernameEditText.setVisibility(View.VISIBLE);
+                                        passwordEditText.setVisibility(View.VISIBLE);
+                                        loginButton.setVisibility(View.VISIBLE);
+                                        loadingProgressBar.setVisibility(View.VISIBLE);
+                                        JouLogo.setVisibility(View.VISIBLE);
+                                        Slogan.setVisibility(View.VISIBLE);
+                                        WelText.setVisibility(View.VISIBLE);
+
+//                                    updateUI(null);
+                                    }
+                                }
+                            });
+
                 }
                 return false;
             }
@@ -257,6 +328,10 @@ public class LoginActivity extends AppCompatActivity {
 //            WelText.setVisibility(View.INVISIBLE);
 //        }
 
+
+    }
+    private void loginAction()
+    {
 
     }
 

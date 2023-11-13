@@ -13,6 +13,13 @@
         android:theme="@style/Theme.TheJournal"
         tools:targetApi="31">
         <activity
+            android:name=".HomeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.login.LoginActivity2"
+            android:exported="false"
+            android:label="@string/title_activity_login2" />
+        <activity
             android:name=".JournalEntryEditor"
             android:exported="false"
             android:label="@string/title_activity_journal_entry_editor"
@@ -49,6 +56,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

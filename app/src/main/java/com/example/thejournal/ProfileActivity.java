@@ -6,12 +6,9 @@ import android.annotation.SuppressLint;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -20,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.thejournal.ui.login.LoginActivity;
@@ -45,17 +41,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-class User {
-     private String uid, username, imageURL, age;
 
-     public User(@Nullable String uid, String username, String imageURL, String age) {
-         this.uid = uid;
-         this.username = username;
-         this.age = age;
-         this.imageURL = imageURL;
-
-     }
- }
 public class ProfileActivity extends AppCompatActivity {
 
     private EditText usernameEditText;

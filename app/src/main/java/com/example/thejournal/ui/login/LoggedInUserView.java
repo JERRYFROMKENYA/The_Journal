@@ -3,11 +3,11 @@ package com.example.thejournal.ui.login;
 /**
  * Class exposing authenticated user details to the UI.
  */
- class LoggedInUserView {
+class LoggedInUserView {
     private String displayName;
     //... other data fields that may be accessible to the UI
 
-     LoggedInUserView(String displayName) {
+    LoggedInUserView(String displayName) {
         this.displayName = displayName;
     }
 
