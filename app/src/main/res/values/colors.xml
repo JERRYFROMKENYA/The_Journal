@@ -9,14 +9,14 @@
     <color name="main_purple">#800080</color>
     <color name="colorPrimary">#FFFFFFFF</color>
     <color name="colorPrimaryDark">#292929</color>
-    <color name="colorAccent">#800080</color>
+    <color name="colorAccent">#DF80007E</color>
     <color name="colorDark">#000000</color>
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorSearchIcon">#DBDBDB</color>
     <color name="colorTextHint">#7b7b7b</color>
-    <color name="colorQuickActionsBackground">#686768</color>
+    <color name="colorQuickActionsBackground">#B9474447</color>
     <color name="colorIcons">#a4a4a4</color>
-    <color name="colorTextSubtitle">#cecece</color>
+    <color name="colorTextSubtitle">#0e0e0e</color>
     <color name="colorDefaultNoteColor">#333333</color>
     <color name="colorDefaultSubtitleText">#fafafa</color>
     <color name="colorMiscellaneousBackground">#1f1f1f</color>

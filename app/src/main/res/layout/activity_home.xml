@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeActivity"
+    tools:context=".ui.home.HomeActivity"
     android:background="@color/colorWhite">
 
     <LinearLayout
@@ -25,17 +25,19 @@
             android:text="Journal"
             android:textColor="@color/black"
             android:textSize="@dimen/_40ssp"
+
+            android:textStyle="bold"
             app:layout_constraintTop_toTopOf="parent"
             tools:layout_editor_absoluteX="32dp"
             tools:layout_editor_absoluteY="16dp" />
 
         <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/profilePicture"
-            android:layout_width="@dimen/_50sdp"
-            android:layout_height="@dimen/_50sdp"
+            android:layout_width="@dimen/_30sdp"
+            android:layout_height="@dimen/_30sdp"
+            android:layout_marginStart="@dimen/_50sdp"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_launcher_background"
-            android:layout_marginStart="@dimen/_28sdp"
             app:riv_border_color="@null"
             app:riv_border_width="0dip"
             app:riv_corner_radius="30dip"
@@ -85,14 +87,40 @@
 
 
 
+
         </LinearLayout>
+<!--    <View-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        />-->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/journalPromptHomeRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:paddingStart="0dp"
+        android:paddingEnd="@dimen/_12sdp"
+        android:paddingBottom="@dimen/_12sdp"
+        app:layout_constraintBottom_toTopOf="@id/journalHomeRecyclerView"
+        app:layout_constraintTop_toBottomOf="@id/layoutSearch" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/journalHomeRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:paddingStart="0dp"
+        android:paddingEnd="@dimen/_12sdp"
+        android:paddingBottom="@dimen/_12sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/journalPromptHomeRecyclerView" />
 
     <LinearLayout
         android:id="@+id/layoutQuickActions"
         android:layout_width="345dp"
         android:layout_height="62dp"
         android:layout_marginBottom="16dp"
-        android:background="#D5800080"
+        android:background="@color/colorQuickActionsBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"
 
@@ -106,6 +134,7 @@
             android:layout_width="@dimen/_23sdp"
             android:layout_height="@dimen/_23sdp"
             android:layout_marginStart="@dimen/_20sdp"
+            android:padding="@dimen/_4sdp"
             android:contentDescription="Add Entry"
             android:src="@drawable/ic_camera_black_24dp"
             app:tint="@color/colorWhite"></ImageView>
@@ -114,21 +143,40 @@
             android:id="@+id/imageAddEntry"
             android:layout_width="@dimen/_23sdp"
             android:layout_height="@dimen/_23sdp"
-            android:layout_marginStart="@dimen/_60sdp"
-            android:layout_marginEnd="@dimen/_50sdp"
+            android:layout_marginStart="@dimen/_30sdp"
+            android:layout_marginEnd="@dimen/_25sdp"
+            android:padding="@dimen/_2sdp"
             android:contentDescription="Add Entry"
-            android:src="@drawable/ic_add_outline"
+            android:src="@drawable/ic_pin_drop"
             app:tint="@color/colorWhite"></ImageView>
 
         <ImageView
             android:id="@+id/imageAddMusic"
-            android:layout_width="@dimen/_23sdp"
-            android:layout_height="@dimen/_23sdp"
-            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_width="@dimen/_25sdp"
+            android:layout_height="@dimen/_25sdp"
+            android:layout_marginStart="@dimen/_15sdp"
             android:contentDescription="Add Entry"
-            android:src="@drawable/baseline_library_music_24"
+            android:padding="@dimen/_4sdp"
+            android:src="@drawable/spotify_2"
             app:tint="@color/colorWhite"></ImageView>
     </LinearLayout>
+    <ImageView
+        android:id="@+id/homeFloatingButton"
+        android:layout_height="@dimen/_40sdp"
+        android:layout_width="@dimen/_40sdp"
+        android:layout_marginEnd="@dimen/_30sdp"
+        android:padding="@dimen/_5sdp"
+        android:contentDescription="Home Floating button"
+        android:src="@drawable/ic_add_outline"
+        android:background="@drawable/floatingbutton"
+        app:tint="@color/main_purple"
+        app:layout_constraintBottom_toTopOf="@id/layoutQuickActions"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/layoutQuickActions"
+        >
+
+
+    </ImageView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

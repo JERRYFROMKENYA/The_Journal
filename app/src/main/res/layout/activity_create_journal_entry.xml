@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.createentry.createJournalEntry"
+    android:background="@color/colorPrimary">
+
+    <ScrollView
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/_60sdp"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/_10sdp">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true">
+
+            <ImageView
+                android:id="@+id/imageBack"
+                android:layout_width="@dimen/_30sdp"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_marginStart="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_28sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
+                android:contentDescription="Back Button"
+                android:src="@drawable/ic_back"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+
+                app:tint="@color/main_purple"
+
+                />
+            <ImageView
+                android:id="@+id/bookmark"
+                android:layout_width="@dimen/_30sdp"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_marginStart="@dimen/_220sdp"
+                android:layout_marginTop="@dimen/_28sdp"
+                android:layout_marginEnd="@dimen/_35sdp"
+                android:contentDescription="Back Button"
+                android:src="@drawable/ic_bookmark_add"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+
+                app:tint="@color/main_purple"
+
+                />
+            <ImageView
+                android:layout_width="@dimen/_30sdp"
+                android:layout_height="@dimen/_30sdp"
+                android:id="@+id/imageSave"
+                android:layout_marginEnd="@dimen/_12sdp"
+                android:background="@drawable/background_done_button"
+                android:contentDescription="Done"
+                android:padding="@dimen/_4sdp"
+                android:src="@drawable/baseline_done_24"
+                app:tint="@color/main_purple"
+                app:layout_constraintBottom_toBottomOf="@id/imageBack"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/imageBack"
+
+                />
+
+            <EditText
+                android:id="@+id/inputEntryTitle"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_marginStart="@dimen/_3sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:background="@null"
+                android:fontFamily="@font/ubuntu_bold"
+                android:hint="What moment are you reflecting on?"
+                android:imeOptions="actionDone"
+                android:importantForAutofill="no"
+                android:includeFontPadding="false"
+                android:inputType="textMultiLine"
+                android:textColor="@color/black"
+                android:textColorHint="@color/colorTextHint"
+                android:textSize="@dimen/_16sdp"
+                app:layout_constraintTop_toBottomOf="@id/imageBack"
+                
+                />
+
+            <TextView
+                android:id="@+id/textDateAndTime"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntu"
+                android:includeFontPadding="false"
+                android:textColor="@color/main_purple"
+                android:textSize="@dimen/_10ssp"
+                app:layout_constraintEnd_toEndOf="@id/inputEntryTitle"
+                app:layout_constraintStart_toStartOf="@id/inputEntryTitle"
+                app:layout_constraintTop_toBottomOf="@id/inputEntryTitle"
+
+                />
+
+            <EditText
+                android:id="@+id/inputEntrySubtitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:fontFamily="@font/ubuntu_medium"
+                android:hint="What will you remember about this?"
+                android:importantForAutofill="no"
+                android:includeFontPadding="false"
+                android:inputType="textMultiLine"
+                android:layout_marginStart="@dimen/_8sdp"
+                android:layout_marginEnd="@dimen/_8sdp"
+                android:paddingTop="@dimen/_8sdp"
+                android:paddingBottom="@dimen/_8sdp"
+                android:textColor="@color/colorTextSubtitle"
+                android:textColorHint="@color/colorTextHint"
+                android:textSize="@dimen/_13ssp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/subtitleIndicator"
+                app:layout_constraintTop_toBottomOf="@id/textDateAndTime"
+                />
+            <View
+                android:id="@+id/subtitleIndicator"
+                android:layout_width="@dimen/_5sdp"
+                android:layout_height="0dp"
+                android:background="@drawable/background_subtitle_indicator"
+                app:layout_constraintBottom_toBottomOf="@id/inputEntrySubtitle"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/inputEntrySubtitle"/>
+
+                <EditText
+                    android:id="@+id/inputEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_12sdp"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:layout_marginEnd="@dimen/_12sdp"
+                    android:layout_marginBottom="@dimen/_15sdp"
+                    android:background="@null"
+                    android:fontFamily="@font/ubuntu"
+                    android:gravity="top"
+                    android:hint="What are the details of your reflection?"
+                    android:importantForAutofill="no"
+                    android:includeFontPadding="false"
+                    android:inputType="textMultiLine"
+                    android:minHeight="@dimen/_100sdp"
+                    android:textColorHint="@color/colorTextHint"
+                    android:textSize="@dimen/_13ssp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/inputEntrySubtitle"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+    <LinearLayout
+        android:id="@+id/layoutQuickActions"
+        android:layout_width="345dp"
+        android:layout_height="62dp"
+        android:layout_marginBottom="0dp"
+        android:background="@drawable/background_edit_tools"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+
+        android:padding="@dimen/_15sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/scroll"
+        >
+        <TextView
+            android:id="@+id/textGenerate"
+            android:layout_width="@dimen/_23sdp"
+            android:layout_height="@dimen/_23sdp"
+            android:layout_marginStart="0dp"
+            android:padding="@dimen/_4sdp"
+            app:layout_constraintStart_toEndOf="@id/inputEntryTitle"
+            app:layout_constraintBottom_toTopOf="@id/inputEntrySubtitle"
+            app:layout_constraintTop_toTopOf="@id/inputEntryTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="✨"
+            />
+
+
+        <ImageView
+            android:id="@+id/imageAddImage"
+            android:layout_width="@dimen/_23sdp"
+            android:layout_height="@dimen/_23sdp"
+            android:layout_marginStart="@dimen/_22sdp"
+            android:padding="@dimen/_4sdp"
+            android:contentDescription="Add Entry"
+            android:src="@drawable/ic_camera_black_24dp"
+            app:tint="@color/colorWhite"></ImageView>
+
+        <ImageView
+            android:id="@+id/imageAddEntry"
+            android:layout_width="@dimen/_23sdp"
+            android:layout_height="@dimen/_23sdp"
+            android:layout_marginStart="@dimen/_30sdp"
+            android:layout_marginEnd="@dimen/_25sdp"
+            android:padding="@dimen/_2sdp"
+            android:contentDescription="Add Entry"
+            android:src="@drawable/ic_pin_drop"
+            app:tint="@color/colorWhite"></ImageView>
+
+        <ImageView
+            android:id="@+id/imageAddMusic"
+            android:layout_width="@dimen/_25sdp"
+            android:layout_height="@dimen/_25sdp"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:contentDescription="Add Entry"
+            android:padding="@dimen/_4sdp"
+            android:src="@drawable/spotify_2"
+            app:tint="@color/colorWhite"></ImageView>
+        <ImageView
+            android:id="@+id/imageVoice"
+            android:layout_width="@dimen/_25sdp"
+            android:layout_height="@dimen/_25sdp"
+            android:layout_marginStart="@dimen/_30sdp"
+            android:contentDescription="Add Entry"
+            android:padding="@dimen/_4sdp"
+            android:src="@drawable/ic_voice"
+            app:tint="@color/colorWhite"></ImageView>
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
