@@ -128,7 +128,7 @@ public class createJournalEntry extends AppCompatActivity {
 
     private void generateSuggestions()
     {
-        if(inputSubtitleEntry.getText().toString().trim().isEmpty()||inputEntry.getText().toString().trim().isEmpty())
+        if(inputSubtitleEntry.getText().toString().trim().isEmpty()&&inputEntry.getText().toString().trim().isEmpty())
         {
             String promptText=new ApiHandler().generateText(
                     "AIzaSyB5UooCRfiIKJP_xbcmtl-d4k-46t_JH6A",
