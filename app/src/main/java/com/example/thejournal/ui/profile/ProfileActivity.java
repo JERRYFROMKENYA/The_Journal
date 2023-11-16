@@ -1,4 +1,4 @@
-package com.example.thejournal;
+package com.example.thejournal.ui.profile;
 
 import static androidx.fragment.app.FragmentManager.TAG;
 
@@ -19,7 +19,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.thejournal.ui.login.LoginActivity;
+import com.example.thejournal.MainActivity;
+import com.example.thejournal.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,7 +35,6 @@ import com.google.firebase.storage.UploadTask;
 //import com.google.firebase.firestore.auth.User;
 
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -131,7 +131,7 @@ public class ProfileActivity extends AppCompatActivity {
                 try {
                     Uri imageUri = data.getData();
                     imageUriforUpload=imageUri;
-                    System.out.println(imageUriforUpload);
+
 
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
                     imageView.setImageBitmap(bitmap);
@@ -177,17 +177,16 @@ public class ProfileActivity extends AppCompatActivity {
                                                 userData.put("imageUrl", imageUrl);
 
 // Add a new document with a generated ID
-                                                db.collection("users")
-                                                        .add(userData)
-                                                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                                            @SuppressLint("RestrictedApi")
+                                                db.collection("users").document(uid)
+                                                        .set(userData)
+                                                        .addOnSuccessListener(new OnSuccessListener() {
                                                             @Override
-                                                            public void onSuccess(DocumentReference documentReference) {
-                                                                Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                                                            public void onSuccess(Object o) {
                                                                 Intent myIntent = new Intent(ProfileActivity.this, MainActivity.class);
                                                                 myIntent.putExtra("key", user.getEmail()); //Optional parameters
                                                                 ProfileActivity.this.startActivity(myIntent);
                                                                 finish();
+
                                                             }
                                                         })
                                                         .addOnFailureListener(new OnFailureListener() {

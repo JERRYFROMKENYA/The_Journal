@@ -83,8 +83,9 @@
         android:layout_height="150dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/journal_logos_black"
-        tools:layout_editor_absoluteY="255dp" />
+        app:srcCompat="@drawable/journal_logos_transparent"
+        tools:layout_editor_absoluteY="255dp"
+        app:tint="#E113E1" />
 
     <TextView
         android:id="@+id/loginSlogan"

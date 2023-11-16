@@ -2,6 +2,8 @@ package com.example.thejournal;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
+
+import com.example.thejournal.ui.home.HomeActivity;
 import com.example.thejournal.ui.login.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -15,6 +17,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         FirebaseAuth mAuth;
         mAuth=FirebaseAuth.getInstance();
+
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null){

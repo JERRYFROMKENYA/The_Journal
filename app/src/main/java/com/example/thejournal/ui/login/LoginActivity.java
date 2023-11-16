@@ -2,7 +2,6 @@ package com.example.thejournal.ui.login;
 
 import static android.content.ContentValues.TAG;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -26,8 +25,8 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.thejournal.MainActivity;
-import com.example.thejournal.ProfileActivity;
 import com.example.thejournal.databinding.ActivityLoginBinding;
+import com.example.thejournal.ui.profile.ProfileActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
