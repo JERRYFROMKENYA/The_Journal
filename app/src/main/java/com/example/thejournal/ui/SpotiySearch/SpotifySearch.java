@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.Editable;
@@ -34,24 +35,23 @@ public class SpotifySearch extends AppCompatActivity {
     EditText searchbar;
     SpotifyAdapter spotifyAdapter;
     ConstraintLayout weblayout;
-    ImageView MusicSelect , musicBack;
+    ImageView MusicSelect, musicBack;
 
     WebView webView;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_spotifysearch);
-    musicList=new ArrayList<>();
+        musicList = new ArrayList<>();
 
         searchbar = findViewById(R.id.inputMusicSearch);
 
-weblayout=findViewById(R.id.playerlayout);
-weblayout.setVisibility(View.GONE);
-webView=findViewById(R.id.webPlayer);
-MusicSelect=findViewById(R.id.MusicSelect);
-musicBack=findViewById(R.id.musicBack);
+        weblayout = findViewById(R.id.playerlayout);
+        weblayout.setVisibility(View.GONE);
+        webView = findViewById(R.id.webPlayer);
+        MusicSelect = findViewById(R.id.MusicSelect);
+        musicBack = findViewById(R.id.musicBack);
         musicBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,14 +59,10 @@ musicBack=findViewById(R.id.musicBack);
             }
         });
 
-
         musicRecycler = findViewById(R.id.musicrecycler);
-        musicRecycler.setLayoutManager(
-        new LinearLayoutManager(getApplicationContext())
-);
+        musicRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
-        spotifyAdapter = new SpotifyAdapter(this,musicList,
-                webView,weblayout,MusicSelect,this);
+        spotifyAdapter = new SpotifyAdapter(this, musicList, webView, weblayout, MusicSelect, this);
         musicRecycler.setAdapter(spotifyAdapter);
 
         searchbar.addTextChangedListener(new TextWatcher() {
@@ -77,55 +73,47 @@ musicBack=findViewById(R.id.musicBack);
 
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-
-
                 // This method is called to notify you that somewhere within `start` and `start + before`, `count` character(s) has been replaced.
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if(searchbar.getText().toString().trim().isEmpty())
-                {
-
+                if (searchbar.getText().toString().trim().isEmpty()) {
+                } else {
+                    // Move the network operations to a background thread
+                    new SearchTask().execute(editable.toString());
                 }
-                else {
-                    displayResults();
-                }
-                // This method is called to notify you that the characters within `Editable` have been changed.
-                String newText = editable.toString();
-                // Do something with the updated text
-                // e.g., perform a search, update a list, etc.
             }
         });
     }
-    private void displayResults()
-    {
-        String input=searchbar.getText().toString();
-//                String input = "Ken Carson";
-        JSONArray result = null;
-        try {
-            result = searchSpotify(input);
+
+    private class SearchTask extends AsyncTask<String, Void, JSONArray> {
+        @Override
+        protected JSONArray doInBackground(String... params) {
+            String input = params[0];
+            try {
+                return searchSpotify(input);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override
+        protected void onPostExecute(JSONArray result) {
+            // Update UI on the main thread with the search results
             musicList.clear();
             musicList.addAll(convertJsonToMusicList(result));
             spotifyAdapter.notifyDataSetChanged();
-
-
-//                    Log.d(TAG, "Data fetched from Spotify:" + result);
-
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
         }
-        System.out.println(result.toString());
     }
 
-    public void finishWithIntent(Music music)
-    {
-        Intent intent=new Intent();
-        intent.putExtra("image",music.getImageResource());
+    public void finishWithIntent(Music music) {
+        Intent intent = new Intent();
+        intent.putExtra("image", music.getImageResource());
         intent.putExtra("url", music.getMusicUrl());
-        intent.putExtra("artist",music.getArtist());
-        intent.putExtra("title",music.getTitle());
-        setResult(RESULT_OK,intent);
+        intent.putExtra("artist", music.getArtist());
+        intent.putExtra("title", music.getTitle());
+        setResult(RESULT_OK, intent);
         finish();
     }
 }

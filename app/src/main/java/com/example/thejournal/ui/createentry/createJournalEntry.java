@@ -38,7 +38,7 @@ public class createJournalEntry extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_journal_entry);
         Intent intent = getIntent();
-        if(intent.getStringExtra("artist").toString().trim().isEmpty())
+        if(intent.getStringExtra("artist")==null)
         {
 
         }
