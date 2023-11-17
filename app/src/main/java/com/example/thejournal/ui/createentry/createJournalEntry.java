@@ -1,10 +1,14 @@
 package com.example.thejournal.ui.createentry;
 
+import static androidx.fragment.app.FragmentManager.TAG;
+
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -20,6 +24,7 @@ import com.google.firebase.auth.FirebaseUser;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 public class createJournalEntry extends AppCompatActivity {
     EditText inputEntryTitle,inputSubtitleEntry, inputEntry ;
@@ -27,10 +32,20 @@ public class createJournalEntry extends AppCompatActivity {
     boolean bookmarked=false;
     TextView textDateTime, generateImage;
 
+    @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_journal_entry);
+        Intent intent = getIntent();
+        if(intent.getStringExtra("artist").toString().trim().isEmpty())
+        {
+
+        }
+        else
+        {
+            Log.d(TAG, Objects.requireNonNull(intent.getStringExtra("title")));
+        }
 
         ImageView imageBack=findViewById(R.id.imageBack);
         imageDone=findViewById(R.id.imageSave);
@@ -133,8 +148,11 @@ public class createJournalEntry extends AppCompatActivity {
             String promptText=new ApiHandler().generateText(
                     "AIzaSyB5UooCRfiIKJP_xbcmtl-d4k-46t_JH6A",
                     "Generate one " +
-                            "random healthy journaling prompt only one result different " +
-                            "every time make it is just one sentence nothing extra");
+                            "random healthy journaling prompt other than 'What are you grateful for today' only one result different " +
+                            "every time make it is just one sentence " +
+                            "nothing extra(no special characters only a-z and '?' no nothing, " +
+                            "just a simple and complete sentence) " +
+                            "make it different from the last one");
             if(promptText==null)
             {
                 inputEntryTitle.setText("What do you want remember about today?");

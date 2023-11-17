@@ -48,51 +48,48 @@
 
     </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/layoutSearch"
+    <LinearLayout
+        android:id="@+id/layoutSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_8sdp"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:layout_marginEnd="@dimen/_8sdp"
+        android:background="@drawable/background_search"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/_10sdp"
+        android:paddingEnd="@dimen/_10sdp"
+        app:layout_constraintTop_toBottomOf="@id/topBar"
+        >
+        <ImageView
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:contentDescription="Journal"
+            android:src="@drawable/ic_search"
+            app:tint="@color/colorSearchIcon"></ImageView>
+
+        <EditText
+            android:id="@+id/inputsearch"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_8sdp"
-            android:layout_marginTop="@dimen/_15sdp"
-            android:layout_marginEnd="@dimen/_8sdp"
-            android:background="@drawable/background_search"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:paddingStart="@dimen/_10sdp"
-            android:paddingEnd="@dimen/_10sdp"
-            app:layout_constraintTop_toBottomOf="@id/topBar"
-            >
-            <ImageView
-                android:layout_width="@dimen/_20sdp"
-                android:layout_height="@dimen/_20sdp"
-                android:contentDescription="Journal"
-                android:src="@drawable/ic_search"
-                app:tint="@color/colorSearchIcon"></ImageView>
-
-            <EditText
-                android:id="@+id/inputsearch"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/_35sdp"
-                android:layout_marginStart="@dimen/_12sdp"
-                android:background="@null"
-                android:fontFamily="@font/ubuntu"
-                android:hint="Search Entries"
-                android:imeOptions="actionDone"
-                android:importantForAutofill="no"
-                android:includeFontPadding="false"
-                android:inputType="text"
-                android:textColor="@color/colorTextHint"
-                android:textSize="@dimen/_13ssp"
-                ></EditText>
+            android:layout_height="@dimen/_35sdp"
+            android:layout_marginStart="@dimen/_12sdp"
+            android:background="@null"
+            android:fontFamily="@font/ubuntu"
+            android:hint="Search Entries"
+            android:imeOptions="actionDone"
+            android:importantForAutofill="no"
+            android:includeFontPadding="false"
+            android:inputType="text"
+            android:textColor="@color/colorTextHint"
+            android:textSize="@dimen/_13ssp"
+            ></EditText>
 
 
 
 
-        </LinearLayout>
-<!--    <View-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        />-->
+    </LinearLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/journalPromptHomeRecyclerView"
         android:layout_width="match_parent"
@@ -100,7 +97,7 @@
         android:clipToPadding="false"
         android:paddingStart="0dp"
         android:paddingEnd="@dimen/_12sdp"
-        android:paddingBottom="@dimen/_12sdp"
+        android:paddingBottom="@dimen/_4sdp"
         app:layout_constraintBottom_toTopOf="@id/journalHomeRecyclerView"
         app:layout_constraintTop_toBottomOf="@id/layoutSearch" />
 
