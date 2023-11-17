@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -14,24 +17,21 @@
         android:theme="@style/Theme.TheJournal"
         tools:targetApi="31">
         <activity
+            android:name=".ui.SpotiySearch.SpotifySearch"
+            android:exported="false" />
+        <activity
             android:name=".ui.createentry.createJournalEntry"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"
-
-            />
-
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".ui.home.HomeActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"
-            />
-
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".ui.profile.ProfileActivity"
             android:exported="false" />
-
         <activity
             android:name=".ui.login.LoginActivity"
             android:exported="false"
@@ -49,7 +49,6 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
-
     </application>
 
 </manifest>

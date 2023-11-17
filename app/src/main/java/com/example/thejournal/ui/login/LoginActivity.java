@@ -1,8 +1,12 @@
 package com.example.thejournal.ui.login;
 
-import static android.content.ContentValues.TAG;
+import static androidx.fragment.app.FragmentManager.TAG;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -34,25 +38,32 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
-     FirebaseAuth mAuth= FirebaseAuth.getInstance();
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private EditText usernameEditText;
+    private EditText passwordEditText;
+    private Button loginButton;
+    private TextView WelText;
+    private TextView Slogan;
+    private ImageView JouLogo;
+    private ProgressBar loadingProgressBar;
 
     @Override
     public void onStart() {
         super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
+        if (currentUser != null) {
             currentUser.reload();
             finish();
         }
     }
+
     private LoginViewModel loginViewModel;
     private ActivityLoginBinding binding;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Intent intent = getIntent();
-        String value = intent.getStringExtra("key"); //if it's a string you stored.
+        String value = intent.getStringExtra("key"); // if it's a string you stored.
         super.onCreate(savedInstanceState);
 
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
@@ -61,13 +72,13 @@ public class LoginActivity extends AppCompatActivity {
         loginViewModel = new ViewModelProvider(this, new LoginViewModelFactory())
                 .get(LoginViewModel.class);
 
-        final EditText usernameEditText = binding.username;
-        final EditText passwordEditText = binding.password;
-        final Button loginButton = binding.login;
-        final ProgressBar loadingProgressBar = binding.loading;
-        final ImageView JouLogo=binding.loginImage;
-        final TextView Slogan=binding.loginSlogan;
-        final TextView WelText=binding.loginWelcome;
+        usernameEditText = binding.username;
+        passwordEditText = binding.password;
+        loginButton = binding.login;
+        loadingProgressBar = binding.loading;
+        JouLogo = binding.loginImage;
+        Slogan = binding.loginSlogan;
+        WelText = binding.loginWelcome;
 
         loginViewModel.getLoginFormState().observe(this, new Observer<LoginFormState>() {
             @Override
@@ -88,17 +99,7 @@ public class LoginActivity extends AppCompatActivity {
         loginViewModel.getLoginResult().observe(this, new Observer<LoginResult>() {
             @Override
             public void onChanged(@Nullable LoginResult loginResult) {
-
                 loadingProgressBar.setVisibility(View.GONE);
-//                if (loginResult.getError() != null) {
-//                    showLoginFailed(loginResult.getError());
-//                }
-//                if (loginResult.getSuccess() != null) {
-//
-//                }
-//                setResult(Activity.RESULT_OK);
-
-                //Complete and destroy login activity once successful
                 finish();
             }
         });
@@ -127,91 +128,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-
-
-                    usernameEditText.setVisibility(View.INVISIBLE);
-                    passwordEditText.setVisibility(View.INVISIBLE);
-                    loginButton.setVisibility(View.INVISIBLE);
-                    loadingProgressBar.setVisibility(View.INVISIBLE);
-                    JouLogo.setVisibility(View.INVISIBLE);
-                    Slogan.setVisibility(View.INVISIBLE);
-                    WelText.setVisibility(View.INVISIBLE);
-
-
-
-
-
-
-                    loadingProgressBar.setVisibility(View.VISIBLE);
-                    String email=usernameEditText.getText().toString();
-                    String password=passwordEditText.getText().toString();
-                    mAuth.createUserWithEmailAndPassword(email, password)
-                            .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if (task.isSuccessful()) {
-                                        // Sign up success, update UI with the signed-in user's information
-                                        Log.d(TAG, "createUserWithEmail:success");
-
-                                        FirebaseUser user = mAuth.getCurrentUser();
-                                        updateUiWithSignUp(user);
-                                        Toast.makeText(LoginActivity.this, "Sign Up Success!",
-                                                Toast.LENGTH_SHORT).show();
-                                        finish();
-
-                                    } else {
-                                        // If sign up fails, display a message to the user.
-                                        mAuth.signInWithEmailAndPassword(email, password)
-                                                .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<AuthResult> task) {
-                                                        if (task.isSuccessful()) {
-                                                            // Sign in success, update UI with the signed-in user's information
-                                                            Log.d(TAG, "signInWithEmail:success");
-                                                            FirebaseUser user = mAuth.getCurrentUser();
-                                                            loadingProgressBar.setVisibility(View.INVISIBLE);
-//                                                        updateUI(user);
-                                                            Toast.makeText(LoginActivity.this, "Signed In",
-                                                                    Toast.LENGTH_SHORT).show();
-                                                            updateUiWithUser(user);
-                                                            finish();
-                                                        } else {
-                                                            // If sign in fails, display a message to the user.
-                                                            Log.w(TAG, "signInWithEmail:failure", task.getException());
-                                                            Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                                                    Toast.LENGTH_SHORT).show();
-                                                            loadingProgressBar.setVisibility(View.INVISIBLE);
-                                                            loadingProgressBar.setVisibility(View.VISIBLE);
-                                                            usernameEditText.setVisibility(View.VISIBLE);
-                                                            passwordEditText.setVisibility(View.VISIBLE);
-                                                            loginButton.setVisibility(View.VISIBLE);
-                                                            loadingProgressBar.setVisibility(View.VISIBLE);
-                                                            JouLogo.setVisibility(View.VISIBLE);
-                                                            Slogan.setVisibility(View.VISIBLE);
-                                                            WelText.setVisibility(View.VISIBLE);
-
-//                                                        updateUI(null);
-                                                        }
-                                                    }
-                                                });
-                                        Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                                        Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                                Toast.LENGTH_SHORT).show();
-                                        loadingProgressBar.setVisibility(View.INVISIBLE);
-                                        loadingProgressBar.setVisibility(View.VISIBLE);
-                                        usernameEditText.setVisibility(View.VISIBLE);
-                                        passwordEditText.setVisibility(View.VISIBLE);
-                                        loginButton.setVisibility(View.VISIBLE);
-                                        loadingProgressBar.setVisibility(View.VISIBLE);
-                                        JouLogo.setVisibility(View.VISIBLE);
-                                        Slogan.setVisibility(View.VISIBLE);
-                                        WelText.setVisibility(View.VISIBLE);
-
-//                                    updateUI(null);
-                                    }
-                                }
-                            });
-
+                    checkNetworkAndSignIn();
+                    return true;
                 }
                 return false;
             }
@@ -220,131 +138,82 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                usernameEditText.setVisibility(View.INVISIBLE);
-                passwordEditText.setVisibility(View.INVISIBLE);
-                loginButton.setVisibility(View.INVISIBLE);
-                loadingProgressBar.setVisibility(View.INVISIBLE);
-                JouLogo.setVisibility(View.INVISIBLE);
-                Slogan.setVisibility(View.INVISIBLE);
-                WelText.setVisibility(View.INVISIBLE);
-
-
-
-
-
-
-                loadingProgressBar.setVisibility(View.VISIBLE);
-                String email=usernameEditText.getText().toString();
-                String password=passwordEditText.getText().toString();
-                mAuth.createUserWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    // Sign up success, update UI with the signed-in user's information
-                                    Log.d(TAG, "createUserWithEmail:success");
-
-                                    FirebaseUser user = mAuth.getCurrentUser();
-                                    updateUiWithSignUp(user);
-                                    Toast.makeText(LoginActivity.this, "Sign Up Success!",
-                                            Toast.LENGTH_SHORT).show();
-                                    finish();
-//                                    loadingProgressBar.setVisibility(View.VISIBLE);
-//                                    usernameEditText.setVisibility(View.VISIBLE);
-//                                    passwordEditText.setVisibility(View.VISIBLE);
-//                                    loginButton.setVisibility(View.VISIBLE);
-//                                    loadingProgressBar.setVisibility(View.VISIBLE);
-//                                    JouLogo.setVisibility(View.VISIBLE);
-//                                    Slogan.setVisibility(View.VISIBLE);
-//                                    WelText.setVisibility(View.VISIBLE);
-
-
-//                                    updateUI(user); for welcome
-                                } else {
-                                    // If sign up fails, display a message to the user.
-                                    mAuth.signInWithEmailAndPassword(email, password)
-                                            .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                                    if (task.isSuccessful()) {
-                                                        // Sign in success, update UI with the signed-in user's information
-                                                        Log.d(TAG, "signInWithEmail:success");
-                                                        FirebaseUser user = mAuth.getCurrentUser();
-                                                        loadingProgressBar.setVisibility(View.INVISIBLE);
-//                                                        updateUI(user);
-                                                        Toast.makeText(LoginActivity.this, "Signed In",
-                                                                Toast.LENGTH_SHORT).show();
-                                                        updateUiWithUser(user);
-                                                        finish();
-                                                    } else {
-                                                        // If sign in fails, display a message to the user.
-                                                        Log.w(TAG, "signInWithEmail:failure", task.getException());
-                                                        Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                                                Toast.LENGTH_SHORT).show();
-                                                        loadingProgressBar.setVisibility(View.INVISIBLE);
-                                                        loadingProgressBar.setVisibility(View.VISIBLE);
-                                                        usernameEditText.setVisibility(View.VISIBLE);
-                                                        passwordEditText.setVisibility(View.VISIBLE);
-                                                        loginButton.setVisibility(View.VISIBLE);
-                                                        loadingProgressBar.setVisibility(View.VISIBLE);
-                                                        JouLogo.setVisibility(View.VISIBLE);
-                                                        Slogan.setVisibility(View.VISIBLE);
-                                                        WelText.setVisibility(View.VISIBLE);
-
-//                                                        updateUI(null);
-                                                    }
-                                                }
-                                            });
-                                    Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                                    Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                            Toast.LENGTH_SHORT).show();
-                                    loadingProgressBar.setVisibility(View.INVISIBLE);
-                                    loadingProgressBar.setVisibility(View.VISIBLE);
-                                    usernameEditText.setVisibility(View.VISIBLE);
-                                    passwordEditText.setVisibility(View.VISIBLE);
-                                    loginButton.setVisibility(View.VISIBLE);
-                                    loadingProgressBar.setVisibility(View.VISIBLE);
-                                    JouLogo.setVisibility(View.VISIBLE);
-                                    Slogan.setVisibility(View.VISIBLE);
-                                    WelText.setVisibility(View.VISIBLE);
-
-//                                    updateUI(null);
-                                }
-                            }
-                        });
+                checkNetworkAndSignIn();
             }
         });
-
-//
-//        private void hideUI(){
-//            usernameEditText.setVisibility(View.INVISIBLE);
-//            passwordEditText.setVisibility(View.INVISIBLE);
-//            loginButton.setVisibility(View.INVISIBLE);
-//            loadingProgressBar.setVisibility(View.INVISIBLE);
-//            JouLogo.setVisibility(View.INVISIBLE);
-//            Slogan.setVisibility(View.INVISIBLE);
-//            WelText.setVisibility(View.INVISIBLE);
-//        }
-
-
     }
-    private void loginAction()
-    {
 
+    private void loginAction() {
+        showLoadingUI();
+        String email = usernameEditText.getText().toString();
+        String password = passwordEditText.getText().toString();
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "createUserWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            updateUiWithSignUp(user);
+                            Toast.makeText(LoginActivity.this, "Sign Up Success!", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            mAuth.signInWithEmailAndPassword(email, password)
+                                    .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                                        @SuppressLint("RestrictedApi")
+                                        @Override
+                                        public void onComplete(@NonNull Task<AuthResult> task) {
+                                            if (task.isSuccessful()) {
+                                                Log.d(TAG, "signInWithEmail:success");
+                                                FirebaseUser user = mAuth.getCurrentUser();
+                                                loadingProgressBar.setVisibility(View.INVISIBLE);
+                                                Toast.makeText(LoginActivity.this, "Signed In", Toast.LENGTH_SHORT).show();
+                                                updateUiWithUser(user);
+                                                finish();
+                                            } else {
+                                                Log.w(TAG, "signInWithEmail:failure", task.getException());
+                                                Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                                                showLoginUI();
+                                            }
+                                        }
+                                    });
+                        }
+                    }
+                });
+    }
+
+    private void showLoadingUI() {
+        usernameEditText.setVisibility(View.INVISIBLE);
+        passwordEditText.setVisibility(View.INVISIBLE);
+        loginButton.setVisibility(View.INVISIBLE);
+        loadingProgressBar.setVisibility(View.INVISIBLE);
+        JouLogo.setVisibility(View.INVISIBLE);
+        Slogan.setVisibility(View.INVISIBLE);
+        WelText.setVisibility(View.INVISIBLE);
+        loadingProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    private void showLoginUI() {
+        loadingProgressBar.setVisibility(View.INVISIBLE);
+        usernameEditText.setVisibility(View.VISIBLE);
+        passwordEditText.setVisibility(View.VISIBLE);
+        loginButton.setVisibility(View.VISIBLE);
+        loadingProgressBar.setVisibility(View.VISIBLE);
+        JouLogo.setVisibility(View.VISIBLE);
+        Slogan.setVisibility(View.VISIBLE);
+        WelText.setVisibility(View.VISIBLE);
     }
 
     private void updateUiWithUser(FirebaseUser user) {
         Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
-            myIntent.putExtra("key", user.getEmail()); //Optional parameters
+        myIntent.putExtra("key", user.getEmail());
         LoginActivity.this.startActivity(myIntent);
     }
 
-    private void updateUiWithSignUp(FirebaseUser user)
-    {
+    private void updateUiWithSignUp(FirebaseUser user) {
         Intent myIntent = new Intent(LoginActivity.this, ProfileActivity.class);
-        myIntent.putExtra("email", user.getEmail()); //Optional parameters
-        myIntent.putExtra("uid", user.getUid()); //Optional parameters
+        myIntent.putExtra("email", user.getEmail());
+        myIntent.putExtra("uid", user.getUid());
         LoginActivity.this.startActivity(myIntent);
     }
 
@@ -352,6 +221,14 @@ public class LoginActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
     }
 
+    private void checkNetworkAndSignIn() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
+        if (networkInfo != null && networkInfo.isConnected()) {
+            loginAction();
+        } else {
+            Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
+        }
+    }
 }
-
