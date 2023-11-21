@@ -2,32 +2,25 @@ package com.example.thejournal.ui.home;
 
 import static androidx.fragment.app.FragmentManager.TAG;
 
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 
-import static com.example.thejournal.data.SpotifySearchData.searchSpotify;
-
-import android.animation.Animator;
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.example.thejournal.R;
 import com.example.thejournal.adapters.EntryAdapter;
@@ -40,7 +33,9 @@ import com.example.thejournal.ui.SpotiySearch.SpotifySearch;
 import com.example.thejournal.ui.UpdateView.UpdateView;
 import com.example.thejournal.ui.createentry.createJournalEntry;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentChange;
@@ -55,169 +50,385 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * The main activity responsible for displaying the user's journal entries and providing
- * functionality for creating new entries. It also includes prompts and user profile information.
- */
 public class HomeActivity extends AppCompatActivity {
-    // Flag to indicate whether the app is in edit mode
-    public static boolean EDIT_MODE = false;
+    public static boolean EDIT_MODE=false;
 
-    // Request code for adding an entry
-    public static final int REQUEST_CODE_ADD_INT = 2;
-
-    // Listener registration for Firebase Firestore changes
+    public static final int REQUEST_CODE_ADD_INT=2;
     ListenerRegistration listenerRegistration;
-
-    // RecyclerViews for displaying journal entries and prompts
     private RecyclerView homeRecyclerView, promptsRecyler;
-
-    // Lists to store journal entries and prompts
     private List<JournalEntry> journalEntryList;
-    private List<String> prompts;
 
-    // Adapters for journal entries and prompts
+    private EditText searchBox;
+    private List<String> prompts;
     private EntryAdapter entryAdapter;
     private PromptAdapter promptAdapter;
-
-    // ImageView for the user's profile photo
     ImageView profilePhoto;
 
-    /**
-     * Called when the activity is starting. Initializes UI components, sets up event listeners,
-     * and fetches user-specific data such as journal entries and prompts.
-     *
-     * @param savedInstanceState If the activity is being re-initialized after previously being
-     *                           shut down, this Bundle contains the data it most recently
-     *                           supplied in onSaveInstanceState(Bundle).
-     */
     @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // ...
 
-        // Check if the device SDK version is greater than 8
+        if (Build.VERSION.SDK_INT >= 21) {
+            Window window = this.getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setStatusBarColor(this.getResources().getColor(R.color.gray1));
+        }
         int SDK_INT = Build.VERSION.SDK_INT;
-        if (SDK_INT > 8) {
-            // Apply certain UI changes for devices with SDK version greater than 8
+        if (SDK_INT > 8)
+        {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
                     .permitAll().build();
             StrictMode.setThreadPolicy(policy);
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_home);
-
-            // Initialize Firebase components
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            String uid = user.getUid();
-
-            // Initialize UI components
-            ImageView homeFloatingButton = findViewById(R.id.homeFloatingButton);
-            ImageView spotifyButton = findViewById(R.id.imageAddMusic);
-            profilePhoto = findViewById(R.id.profilePicture);
-            homeRecyclerView = findViewById(R.id.journalHomeRecyclerView);
-            promptsRecyler = findViewById(R.id.journalPromptHomeRecyclerView);
-
-            // Set the status bar color
-            if (Build.VERSION.SDK_INT >= 21) {
-                Window window = this.getWindow();
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-                window.setStatusBarColor(this.getResources().getColor(R.color.gray1));
-            }
-
-            // Set up Firebase Firestore listener to retrieve journal entries
-            getEntries();
-
-            // Set up prompts
-            generateSuggestions();
-
-            // Set up UI event listeners
-            spotifyButton.setOnClickListener(new View.OnClickListener() {
+            String uid=user.getUid();
+            ImageView homeFloatingButton= findViewById(R.id.homeFloatingButton);
+            ImageView spotifybutton=findViewById(R.id.imageAddMusic);
+            searchBox=findViewById(R.id.inputsearch);
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            DocumentReference docRef = db.collection("users").document(uid);
+            Source source = Source.CACHE;
+            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
-                public void onClick(View v) {
-                    // Start the Spotify search activity
-                    startActivityForResult(new Intent(getApplicationContext(), SpotifySearch.class),
-                            REQUEST_CODE_ADD_INT);
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                        } else {
+                            Log.d(TAG, "No such document");
+                        }
+                    } else {
+                        Log.d(TAG, "get failed with ", task.getException());
+                    }
+                }
+            });
+// Get the document, forcing the SDK to use the offline cache
+            docRef.get(Source.SERVER).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @SuppressLint("RestrictedApi")
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        Log.d(TAG, "Cached document data: " + document.getData());
+
+                        // Replace getBitmapFromURL with ImageLoader
+                        String imageUrl = String.valueOf(document.getData().get("imageUrl"));
+                        Log.d(TAG, "Image URL: " + imageUrl);
+                        ImageLoader.getInstance().loadImage(HomeActivity.this, imageUrl,
+                                profilePhoto);
+                        Log.d(TAG, "Image loading completed");
+                    } else {
+                        Log.d(TAG, "Go online");
+                        docRef.get(Source.CACHE).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @SuppressLint("RestrictedApi")
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    DocumentSnapshot document = task.getResult();
+                                    Log.d(TAG, "Server document data: " + document.getData());
+
+                                    // Replace getBitmapFromURL with ImageLoader
+                                    String imageUrl = document.getData().get("imageUrl").toString();
+                                    Log.d(TAG, "Image URL: " + imageUrl);
+                                    ImageLoader.getInstance().loadImage(HomeActivity.this, imageUrl, profilePhoto);
+                                    Log.d(TAG, "Image loading completed");
+                                } else {
+                                    Log.d(TAG, "Failed to get data");
+                                }
+                                Log.d(TAG, "Alpha:"+profilePhoto.getImageAlpha());
+
+                            }
+                        });
+                    }
                 }
             });
 
+            profilePhoto = findViewById(R.id.profilePicture);
+
+
+        searchBox.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(String.valueOf(searchBox.getText()).trim().isEmpty())
+                {
+                    journalEntryList.clear();
+                    getEntries();
+                    entryAdapter.notifyDataSetChanged();
+                }
+                else
+                {
+                    getEntriesBySearch(String.valueOf(searchBox.getText()));
+
+                }
+
+            }
+        });
+
+spotifybutton.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+
+        startActivityForResult(new Intent(getApplicationContext(), SpotifySearch.class),
+                REQUEST_CODE_ADD_INT);
+
+    }
+});
             homeFloatingButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // Start the create journal entry activity
                     startActivityForResult(new Intent(getApplicationContext(), createJournalEntry.class),
                             REQUEST_CODE_ADD_INT);
                 }
             });
 
-            // Set up RecyclerViews and Adapters
-            homeRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-            promptsRecyler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-            journalEntryList = new ArrayList<>();
-            entryAdapter = new EntryAdapter(journalEntryList, this);
+            homeRecyclerView=findViewById(R.id.journalHomeRecyclerView);
+            homeRecyclerView.setLayoutManager(
+                    new LinearLayoutManager(getApplicationContext())
+            );
+            promptsRecyler=findViewById(R.id.journalPromptHomeRecyclerView);
+            promptsRecyler.setLayoutManager(
+                    new LinearLayoutManager(getApplicationContext())
+            );
+            journalEntryList=new ArrayList<>();
+            entryAdapter=new EntryAdapter(journalEntryList,this);
             homeRecyclerView.setAdapter(entryAdapter);
-            prompts = new ArrayList<>();
-            promptAdapter = new PromptAdapter(prompts, this);
+            prompts=new ArrayList<>();
+            promptAdapter=new PromptAdapter(prompts,this);
             promptsRecyler.setAdapter(promptAdapter);
         }
+
     }
 
-    /**
-     * Retrieves journal entries from Firebase Firestore and updates the UI accordingly.
-     */
-    private void getEntries() {
-        // ...
+    private void getEntriesBySearch(String searchString) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String uid = user.getUid();
+
+        journalEntryList.clear();
+        entryAdapter.notifyDataSetChanged();
+
+        // Split the search string by spaces
+        String[] searchTerms = searchString.split("\\s+");
+
+        List<Task<QuerySnapshot>> tasks = new ArrayList<>();
+
+        // Create separate queries for each field and add them to the list of tasks
+        for (String term : searchTerms) {
+            tasks.add(db.collection("users/" + uid + "/Entries")
+                    .whereArrayContains("emotions", term)
+                    .get());
+
+            tasks.add(db.collection("users/" + uid + "/Entries")
+                    .whereArrayContains("title", term)
+                    .get());
+        }
+
+        // Use Tasks.whenAllSuccess to combine the results of all tasks
+        Tasks.whenAllSuccess(tasks).addOnSuccessListener(new OnSuccessListener<List<Object>>() {
+            @Override
+            public void onSuccess(List<Object> results) {
+                for (Object result : results) {
+                    if (result instanceof QuerySnapshot) {
+                        QuerySnapshot querySnapshot = (QuerySnapshot) result;
+//                        processQuerySnapshot(querySnapshot);
+                    }
+                }
+            }
+        });
     }
 
-    /**
-     * Generates and displays journaling prompts.
-     */
-    private void generateSuggestions() {
-        // ...
+
+// ...
+
+
+private void getEntries() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String uid = user.getUid();
+
+        // Remove the existing entries before adding new ones
+        if (!journalEntryList.isEmpty())
+        {
+            journalEntryList.clear();
+            entryAdapter.notifyDataSetChanged();
+        }
+
+
+        // Add a snapshot listener to retrieve entries
+
+        listenerRegistration = db.collection("users/" + uid + "/Entries")
+                .addSnapshotListener(MetadataChanges.INCLUDE, new EventListener<QuerySnapshot>() {
+                    @SuppressLint("RestrictedApi")
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot querySnapshot,
+                                        @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Log.w(TAG, "Listen error", e);
+                            return;
+                        }
+
+                        if (querySnapshot != null) {
+                            for (DocumentChange change : querySnapshot.getDocumentChanges()) {
+                                if (change.getType() == DocumentChange.Type.ADDED) {
+                                    QueryDocumentSnapshot document = change.getDocument();
+                                    JournalEntry je = new JournalEntry();
+                                    je.setId(document.getId());
+                                    je.setTitle(document.getData().get("title").toString());
+                                    je.setBody(String.valueOf(document.getData().get("body")));
+                                    je.setSubtitle(document.getData().get("subtitle").toString());
+                                    je.setDateCreated(document.getData().get("dateCreated").toString());
+                                    List<Map<String, Object>> musicDataList = (List<Map<String, Object>>) document.getData().get("music");
+
+                                    if (musicDataList != null) {
+                                        List<Music> musicList = new ArrayList<>();
+
+                                        for ( Map<String, Object> musicData : musicDataList) {
+                                            Music music = new Music();
+
+                                            // Assuming you have fields like "title", "artist", "imageUrl", and "musicUrl" in each Music object
+                                            music.setImageResource((String) musicData.get("imageResource"));
+
+                                            musicList.add(music);
+                                        }
+
+                                        je.setMusic(musicList);
+                                    } else {
+                                        je.setMusic(new ArrayList<>()); // Set an empty list if "music" field is null or empty
+                                    }
+
+                                    List<String> imageDataList = (List<String>) document.getData().get("images");
+
+                                    if (imageDataList != null) {
+                                        List<String> imageList = new ArrayList<>();
+
+                                        for ( String imageD : imageDataList) {
+//                                            Music music = new Music();
+
+                                            // Assuming you have fields like "title", "artist", "imageUrl", and "musicUrl" in each Music object
+//                                            music.setImageResource((String) imageD.get("imageResource"));
+
+                                            imageList.add(imageD);
+                                        }
+
+                                        je.setImages(imageList);
+                                    } else {
+                                        je.setImages(new ArrayList<>()); // Set an empty list if "music" field is null or empty
+                                    }
+
+                                    journalEntryList.add(je);
+                                    entryAdapter.notifyItemInserted(journalEntryList.size() - 1);
+                                    Log.d(TAG, "Document added: " + document.getData());
+                                }
+                            }
+
+                            homeRecyclerView.smoothScrollToPosition(0);
+                        }
+
+                        String source = querySnapshot.getMetadata().isFromCache() ? "local cache" : "server";
+                        Log.d(TAG, "Data fetched from " + source);
+                    }
+                });
     }
 
-    // ...
+    @Override
+    protected void onStop() {
+        super.onStop();
 
-    /**
-     * Handles the result of an activity started for result, such as Spotify search or creating
-     * a new journal entry.
-     *
-     * @param requestCode The request code originally supplied to startActivityForResult(),
-     * @param resultCode  The result code returned by the child activity through its setResult().
-     * @param data        An Intent, which can return result data to the caller.
-     */
+        // Remove the listener to avoid multiple active listeners
+        if (listenerRegistration != null) {
+            listenerRegistration.remove();
+        }
+
+
+    }
+
+    private void generateSuggestions()
+    {
+        String promptText=new ApiHandler().generateText(
+                "AIzaSyB5UooCRfiIKJP_xbcmtl-d4k-46t_JH6A",
+                "Generate one " +
+                        "random healthy journaling prompt other than 'What are you grateful for today' only one result different " +
+                        "every time make it is just one sentence " +
+                        "nothing extra(no special characters only a-z and '?' no nothing, " +
+                        "just a simple and complete sentence) " +
+                        "make it different from the last one");
+
+        if(promptText==null)
+        {
+            prompts.add("What did you do recently?");
+        }
+        else
+        {
+            prompts.clear();
+            promptAdapter.notifyItemRemoved(0);
+            prompts.add(promptText);
+
+        }
+
+        promptAdapter.notifyItemInserted(prompts.size()-1);
+
+    }
+
+// ...
+
+
     @SuppressLint("RestrictedApi")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        // ...
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_ADD_INT && resultCode == RESULT_OK) {
+            // Clear the list only if it's not null
+//            getEntries();
+            generateSuggestions();
+
+            if (data.getStringExtra("artist") != null) {
+                Intent intent = new Intent(getApplicationContext(), createJournalEntry.class);
+                intent.putExtra("image", data.getStringExtra("image"));
+                intent.putExtra("url", data.getStringExtra("url"));
+                intent.putExtra("artist", data.getStringExtra("artist"));
+                intent.putExtra("title", data.getStringExtra("title"));
+                startActivityForResult(intent, REQUEST_CODE_ADD_INT);
+            }
+        }
     }
 
-    /**
-     * Called when the activity will start interacting with the user. Fetches entries and prompts
-     * when the activity is resumed.
-     */
     @Override
     protected void onStart() {
-        // ...
+        super.onStart();
+        if(journalEntryList!=null){
+            if(journalEntryList.size()>1) {
+                journalEntryList.clear();
+                entryAdapter.notifyDataSetChanged();
+            }
+        }
+        getEntries();
+        generateSuggestions();
+        entryAdapter.notifyDataSetChanged();
     }
+    public void startActivitywithID(String ID)
+    {
 
-    /**
-     * Starts the UpdateView activity with the specified entry ID.
-     *
-     * @param ID The ID of the entry to be viewed and updated.
-     */
-    public void startActivitywithID(String ID) {
-        // ...
-    }
+        Intent intent = new Intent(this, UpdateView.class);
+        intent.putExtra("id",ID);
+            HomeActivity.this.startActivity(intent);
+        }
+
+
 }

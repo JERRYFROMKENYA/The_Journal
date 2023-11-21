@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/layoutEntry"
-    android:layout_width="@dimen/_70sdp"
+    android:layout_width="@dimen/_80sdp"
     android:layout_height="wrap_content"
     android:layout_marginStart="0dp"
     android:layout_marginTop="0dp"
@@ -14,9 +14,10 @@
 
     <ImageView
         android:id="@+id/mediaPicture"
-        android:layout_width="@dimen/_60sdp"
-        android:layout_height="@dimen/_60sdp"
+        android:layout_width="@dimen/_75sdp"
+        android:layout_height="@dimen/_75sdp"
         android:src="@drawable/suggestion_back"
+        android:scaleType="fitCenter"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,7 +36,7 @@
         android:gravity="center"
         android:includeFontPadding="false"
         android:textColor="@color/black"
-        android:textSize="@dimen/_5ssp"
+        android:textSize="@dimen/_10ssp"
         app:layout_constraintTop_toBottomOf="@id/mediaPicture"
         app:layout_constraintStart_toStartOf="parent"
         />
@@ -53,7 +54,7 @@
         android:includeFontPadding="false"
         android:text="Artist Name"
         android:textColor="@color/black"
-        android:textSize="@dimen/_2ssp"
+        android:textSize="@dimen/_8ssp"
 
         app:layout_constraintTop_toBottomOf="@id/mediaTitle"
         app:layout_constraintStart_toStartOf="parent"
@@ -77,12 +78,12 @@
 
     <ImageView
         android:id="@+id/remove"
-        android:layout_width="@dimen/_15sdp"
-        android:layout_height="@dimen/_15sdp"
+        android:layout_width="@dimen/_18sdp"
+        android:layout_height="@dimen/_18sdp"
         android:src="@drawable/ic_remove"
         android:tint="#FF0000"
-        android:layout_marginStart="@dimen/_55sdp"
-        android:layout_marginBottom="@dimen/_58sdp"
+        android:layout_marginStart="@dimen/_65sdp"
+        android:layout_marginBottom="@dimen/_68sdp"
         app:layout_constraintBottom_toBottomOf="@+id/mediaArtist"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
