@@ -112,9 +112,25 @@ public class ProfileActivity extends AppCompatActivity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(imageUriforUpload==null){
+                    Toast.makeText(ProfileActivity.this, "Add a profile picture", Toast.LENGTH_SHORT).show();
+                    return;}
+                if(usernameEditText.getText().toString().trim().isEmpty())
+                {
+                    Toast.makeText(ProfileActivity.this, "Add username", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if(ageEditText.getText().toString().trim().isEmpty())
+                {
+                    Toast.makeText(ProfileActivity.this, "Please input year of birth", Toast.LENGTH_SHORT).show();
+                return;
+                }
+                submitButton.setText("Loading ...");
+                imagePickerButton.setText("Loading...");
+                usernameEditText.setEnabled(false);
+                ageEditText.setEnabled(false);
                 String username = usernameEditText.getText().toString().trim();
                 String age = ageEditText.getText().toString().trim();
-
                 // Call the function to update the user's profile data in Firebase
 
                 updateProfileData(username, age);
@@ -158,6 +174,7 @@ public class ProfileActivity extends AppCompatActivity {
         // Update the user's profile data in Firebase Auth
         user.updateProfile(profileUpdates)
                 .addOnCompleteListener(task -> {
+                    System.out.println(imageUriforUpload);
                     if (task.isSuccessful()) {
                         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
                         StorageReference imageRef = storageRef.child("images/" + user.getUid() + "/profile.jpg");

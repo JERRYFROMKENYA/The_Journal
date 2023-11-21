@@ -8,6 +8,26 @@
     android:layout_marginTop="@dimen/_12sdp"
     android:orientation="vertical"
     android:background="@drawable/background_journalentry">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/entryImageRecycler"
+            android:paddingTop="@dimen/_8sdp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/entryMusicRecycler"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/entryMusicRecycler"
+            app:layout_constraintStart_toEndOf="@id/entryImageRecycler"
+            android:paddingTop="@dimen/_8sdp"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
     <TextView
         android:id="@+id/textTitle"
         android:layout_width="match_parent"
@@ -18,11 +38,11 @@
         android:fontFamily="@font/ubuntu_bold"
         android:text="Title"
         android:includeFontPadding="false"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:textSize="@dimen/_14ssp"
 
         />
-    
+
     <TextView
        android:id="@+id/textSubtitle"
         android:layout_width="match_parent"
@@ -38,20 +58,41 @@
         android:textSize="@dimen/_12ssp"
 
         />
-    <TextView
-        android:id="@+id/contdateTime"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_marginTop="@dimen/_8sdp"
+        android:layout_marginBottom="@dimen/_12sdp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_8sdp"
-        android:layout_marginEnd="@dimen/_8sdp"
-        android:layout_marginBottom="@dimen/_8sdp"
-        android:fontFamily="@font/ubuntu"
-        android:includeFontPadding="false"
-        android:textColor="@color/colorTextSubtitle"
-        android:textSize="@dimen/_7ssp"
+        >
+        <TextView
+            app:layout_constraintTop_toTopOf="parent"
+            android:id="@+id/contdateTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_8sdp"
+            android:layout_marginEnd="@dimen/_8sdp"
+            android:layout_marginBottom="@dimen/_8sdp"
+            android:text="date"
+            android:gravity="center_vertical"
+            android:fontFamily="@font/ubuntu"
+            android:includeFontPadding="false"
+            android:textColor="@color/colorTextSubtitle"
+            android:textSize="@dimen/_7ssp"
+            />
 
+        <ImageView
+            app:layout_constraintStart_toEndOf="@id/contdateTime"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginEnd="@dimen/_50sdp"
+            android:id="@+id/journalEntryEdit"
+            android:layout_width="@dimen/_18sdp"
+            android:layout_height="@dimen/_18sdp"
+            android:src="@drawable/ic_edit_entry"
+            app:tint="@color/black" />
 
-        />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 
 </LinearLayout>

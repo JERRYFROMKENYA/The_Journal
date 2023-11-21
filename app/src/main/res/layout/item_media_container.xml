@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layoutEntry"
+    android:layout_width="@dimen/_70sdp"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="0dp"
+    android:layout_marginTop="0dp"
+    android:orientation="vertical"
+    android:background="#00000000">
+
+
+
+
+    <ImageView
+        android:id="@+id/mediaPicture"
+        android:layout_width="@dimen/_60sdp"
+        android:layout_height="@dimen/_60sdp"
+        android:src="@drawable/suggestion_back"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:riv_corner_radius="@dimen/_10sdp" />
+
+    <TextView
+        android:id="@+id/mediaTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="0dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="@dimen/_2sdp"
+        android:fontFamily="@font/ubuntu_bold"
+        android:text="Title"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_5ssp"
+        app:layout_constraintTop_toBottomOf="@id/mediaPicture"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/mediaArtist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/_1sdp"
+        android:layout_marginBottom="@dimen/_3sdp"
+        android:fontFamily="@font/ubuntu"
+        android:includeFontPadding="false"
+        android:text="Artist Name"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_2ssp"
+
+        app:layout_constraintTop_toBottomOf="@id/mediaTitle"
+        app:layout_constraintStart_toStartOf="parent"
+
+        />
+
+    <ImageView
+        android:id="@+id/isSpotify"
+        android:layout_width="@dimen/_5sdp"
+        android:layout_height="@dimen/_5sdp"
+        android:layout_marginEnd="@dimen/_200sdp"
+        android:layout_marginStart="@dimen/_8sdp"
+        android:layout_marginTop="@dimen/_3sdp"
+        android:fontFamily="@font/ubuntu"
+        android:includeFontPadding="false"
+        android:src="@drawable/spotify_2"
+        app:layout_constraintTop_toTopOf="@id/mediaPicture"
+        app:layout_constraintStart_toStartOf="@id/mediaPicture"
+        android:tint="@color/gray_400"
+        />
+
+    <ImageView
+        android:id="@+id/remove"
+        android:layout_width="@dimen/_15sdp"
+        android:layout_height="@dimen/_15sdp"
+        android:src="@drawable/ic_remove"
+        android:tint="#FF0000"
+        android:layout_marginStart="@dimen/_55sdp"
+        android:layout_marginBottom="@dimen/_58sdp"
+        app:layout_constraintBottom_toBottomOf="@+id/mediaArtist"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

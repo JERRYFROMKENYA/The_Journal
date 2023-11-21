@@ -126,7 +126,7 @@ itemView.setOnClickListener(new View.OnClickListener() {
     @Override
     public void onClick(View v) {
 toggleWebView(picked);
-tap.setText("Tap and Hold to Use Song");
+
 
 
     }

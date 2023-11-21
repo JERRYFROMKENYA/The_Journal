@@ -1,22 +1,35 @@
 package com.example.thejournal.models;
+
+import java.io.File;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.*;
 import static androidx.fragment.app.FragmentManager.TAG;
 
 import android.annotation.SuppressLint;
 
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.thejournal.models.Music;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
-
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +53,7 @@ public class JournalEntry {
         return subtitle;
     }
 
-    public String[] getImages() {
+    public List<String> getImages() {
         return images;
     }
 
@@ -52,7 +65,7 @@ public class JournalEntry {
         return dateCreated;
     }
 
-    public String[] getMusic() {
+    public List<Music> getMusic() {
         return music;
     }
 
@@ -84,7 +97,7 @@ public class JournalEntry {
         this.subtitle = subtitle;
     }
 
-    public void setImages(String[] images) {
+    public void setImages(List<String> images) {
         this.images = images;
     }
 
@@ -96,7 +109,7 @@ public class JournalEntry {
         this.dateCreated = dateCreated;
     }
 
-    public void setMusic(String[] music) {
+    public void setMusic(List<Music> music) {
         this.music = music;
     }
 
@@ -115,14 +128,15 @@ public class JournalEntry {
     private String uid;
     private String title;
     private String subtitle;
-    private String[] images;
+    private List<String> images;
 
     private String body;
     private String dateCreated;
-    private String music[];
+    private List<Music> music;
     private String locations[];
     private String Emotion;
     private boolean bookmarked;
+
     private int countMatches(String input, String regex, int flags) {
         Matcher matcher = Pattern.compile(regex, flags).matcher(input);
         int count = 0;
@@ -131,7 +145,8 @@ public class JournalEntry {
         }
         return count;
     }
-    public  String analyzeMood(String paragraph) {
+
+    public String analyzeMood(String paragraph) {
         int happyPoints = countMatches(paragraph, "\\b(?:happy|joyful|excited|content|delighted|pleased|elated|glad|cheerful|upbeat|ecstatic|satisfied|grateful|joyous|merry|radiant|smiling|festive|optimistic|thrilled|overjoyed|blessed|lively|jovial|blissful|eager|vibrant|pleasurable|sunny|exuberant|exhilarated|buoyant|jubilant|gleeful|animated|carefree|enthusiastic|heartwarming|spirited|hopeful|chipper|elated|positivity|enjoyable|pleasant|uplifting|ecstasy|sensational|sunny|festivity)\\b", Pattern.CASE_INSENSITIVE);
         int sadPoints = countMatches(paragraph, "\\b(?:sad|unhappy|depress|disappoint|misery|gloom|tearful|downcast|heartbroken|despondent|regret|somber|melanchol|forlorn|woeful|blue|dismal|crestfallen|unpleasant|bitter|pessimist|trouble|weary|despair|anguish|dreary|downhearted|lugubrious|sorrows|deject|downtrodden|unfortunate|grim|plaintive|moros|wretched|desolate|sulky|dishearten|dispirit|oppressiv|glum|downhearted)\\b", Pattern.CASE_INSENSITIVE);
         int angryPoints = countMatches(paragraph, "\\b(?:angry|irritated|frustrated|annoyed|enraged|furious|indignant|exasperated|outraged|incensed|irate|hostile|agitated|livid|vexed|resentful|bitter|mad|infuriated|upset|aggressive|displeased|disgruntled|cross|crabby|snappy|testy|peevish|bothered|offended|pissed off)\\b", Pattern.CASE_INSENSITIVE);
@@ -161,7 +176,8 @@ public class JournalEntry {
             return "Neutral";
         }
     }
-    public JournalEntry(){
+
+    public JournalEntry() {
 //        this.uid=UID;
 //        this.title=TITLE;
 //        this.subtitle=SUBTITLE;
@@ -170,56 +186,176 @@ public class JournalEntry {
 //        this.music=MUSIC;
 //        this.locations=LOCATIONS;
 //        dateCreated=new Date();
-
-
     }
-    public boolean EntryUpload()
-    {
-        this.Emotion = analyzeMood(title + " " + subtitle + " " + body);
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        Map<String, Object> journalData = new HashMap<>();
-        journalData.put("uid", uid);
-        journalData.put("title", title);
-        journalData.put("subtitle", subtitle);
-        journalData.put("images", images);
-        journalData.put("body", body);
-        journalData.put("dateCreated", dateCreated);
-        journalData.put("music", music);
-        journalData.put("location", locations);
-        journalData.put("emotion", Emotion);
 
-        final boolean[] uploadSuccess = {false};
+    public void uploadImages(List<String> imagePaths, final OnUploadImagesListener listener) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
 
-        Task<DocumentReference> task = db.collection("users/" + uid + "/Entries")
-                .add(journalData)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @SuppressLint("RestrictedApi")
+        // Create a reference to the location where you want to store the images
+        StorageReference imagesRef = storageRef.child("users/" + uid + "/images/");
+
+        List<String> uploadedImageUrls = new ArrayList<>();
+
+        // Upload each image
+        for (String imagePath : imagePaths) {
+            // Create a reference to the image file
+            Uri file = Uri.parse(imagePath);
+
+            // Create a reference to store the image in a unique name (you may customize this)
+            StorageReference imageRef = imagesRef.child(file.getLastPathSegment());
+
+            // Upload the file and metadata
+            UploadTask uploadTask = imageRef.putFile(file);
+
+            // Register observers to listen for when the upload is done or if it fails
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    // Image uploaded successfully
+                    imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            String imageUrl = uri.toString();
+                            System.out.println("This is" + imageUrl);
+                            // Add the URL to the list
+                            uploadedImageUrls.add(imageUrl);
+
+                            // Check if all images are uploaded
+
+                                // All images uploaded successfully
+
+                                listener.onUploadImagesSuccess(uploadedImageUrls);
+
+
+                        }
+                    });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    // Handle unsuccessful uploads
+                    listener.onUploadImagesFailure(e);
+                }
+            }).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+
+                }
+            });
+        }
+    }
+
+
+
+    public void EntryUpload(final OnUploadListener listener) {
+        CompletableFuture.runAsync(() -> {
+            // Call the uploadImages function and upload the document
+            this.Emotion = analyzeMood(title + " " + subtitle + " " + body);
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            Map<String, Object> journalData = new HashMap<>();
+
+            if (!images.isEmpty()) {
+                this.uploadImages(images, new JournalEntry.OnUploadImagesListener() {
                     @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
-                        uploadSuccess[0] = true;
+                    public void onUploadImagesSuccess(List<String> imageUrls) {
+                        System.out.println("upload success"+ imageUrls);
+                        journalData.put("uid", uid);
+                        journalData.put("title", title);
+                        journalData.put("subtitle", subtitle);
+                        journalData.put("body", body);
+                        journalData.put("dateCreated", dateCreated);
+                        journalData.put("music", music);
+                        journalData.put("location", locations);
+                        journalData.put("emotion", Emotion);
+                        journalData.put("images", imageUrls);
+                        db.collection("users/" + uid + "/Entries")
+                                .add(journalData)
+                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                    @SuppressLint("RestrictedApi")
+                                    @Override
+                                    public void onSuccess(DocumentReference documentReference) {
+                                        Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                                        listener.onUploadSuccess();
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @SuppressLint("RestrictedApi")
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.w(TAG, "Error adding document", e);
+                                        listener.onUploadFailure(e);
+                                    }
+                                });
+
+
+
+
+
                     }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @SuppressLint("RestrictedApi")
+
                     @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error adding document", e);
-                        uploadSuccess[0] = false;
+                    public void onUploadImagesFailure(Exception e) {
+
                     }
                 });
+            }
+            else {
+                journalData.put("uid", uid);
+                journalData.put("title", title);
+                journalData.put("subtitle", subtitle);
+                journalData.put("body", body);
+                journalData.put("dateCreated", dateCreated);
+                if(music==null)
+                {
+                    journalData.put("music", new ArrayList<>());
+                }
+                else
+                {
+                    journalData.put("music", music);
+                }
 
-        // Block the thread until the task is complete
-        try {
-            Tasks.await(task);
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+                journalData.put("images",new ArrayList<>());
+                journalData.put("location", locations);
+                journalData.put("emotion", Emotion);
+                db.collection("users/" + uid + "/Entries")
+                        .add(journalData)
+                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            @SuppressLint("RestrictedApi")
+                            @Override
+                            public void onSuccess(DocumentReference documentReference) {
+                                Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                                listener.onUploadSuccess();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @SuppressLint("RestrictedApi")
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w(TAG, "Error adding document", e);
+                                listener.onUploadFailure(e);
+                            }
+                        });
+            }
 
-        return uploadSuccess[0];
 
 
+
+        });
+    }
+
+
+
+    public interface OnUploadListener {
+        void onUploadSuccess();
+
+        void onUploadFailure(Exception e);
+    }
+
+    public interface OnUploadImagesListener {
+        void onUploadImagesSuccess(List<String> imageUrls);
+
+        void onUploadImagesFailure(Exception e);
     }
 }
+

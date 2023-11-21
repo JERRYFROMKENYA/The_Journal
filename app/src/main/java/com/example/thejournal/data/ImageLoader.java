@@ -50,7 +50,8 @@ public class ImageLoader {
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                         // Save the image to local storage
-                        LocalStorageUtil.saveBitmap(context, HashUtils.md5(imageUrl) + ".png", bitmap);
+                        LocalStorageUtil.
+                                saveBitmap(context, HashUtils.md5(imageUrl) + ".png", bitmap);
 
                         // Display the image in the ImageView
                         imageView.setImageBitmap(bitmap);

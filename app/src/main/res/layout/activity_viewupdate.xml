@@ -8,7 +8,7 @@
     android:background="@color/colorPrimary">
 
     <ScrollView
-        android:id="@+id/scroll"
+        android:id="@+id/scrollUpdateView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/_60sdp"
@@ -20,7 +20,7 @@
             android:animateLayoutChanges="true">
 
             <ImageView
-                android:id="@+id/imageBack"
+                android:id="@+id/imageBackUpdateView"
                 android:layout_width="@dimen/_30sdp"
                 android:layout_height="@dimen/_30sdp"
                 android:layout_marginStart="@dimen/_8sdp"
@@ -35,7 +35,7 @@
 
                 />
             <ImageView
-                android:id="@+id/bookmark"
+                android:id="@+id/bookmarkUpdateView"
                 android:layout_width="@dimen/_30sdp"
                 android:layout_height="@dimen/_30sdp"
                 android:layout_marginStart="@dimen/_220sdp"
@@ -52,21 +52,35 @@
             <ImageView
                 android:layout_width="@dimen/_30sdp"
                 android:layout_height="@dimen/_30sdp"
-                android:id="@+id/imageSave"
+                android:id="@+id/imageSaveUpdateView"
                 android:layout_marginEnd="@dimen/_12sdp"
                 android:background="@drawable/background_done_button"
                 android:contentDescription="Done"
                 android:padding="@dimen/_4sdp"
                 android:src="@drawable/baseline_done_24"
                 app:tint="@color/main_purple"
-                app:layout_constraintBottom_toBottomOf="@id/imageBack"
+                app:layout_constraintBottom_toBottomOf="@id/imageBackUpdateView"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/imageBack"
+                app:layout_constraintTop_toTopOf="@id/imageBackUpdateView"
+
+                />
+            <ImageView
+                android:layout_width="@dimen/_30sdp"
+                android:layout_height="@dimen/_30sdp"
+                android:id="@+id/imageEditUpdateView"
+                android:layout_marginEnd="@dimen/_12sdp"
+                android:contentDescription="Done"
+                android:padding="@dimen/_4sdp"
+                android:src="@drawable/ic_edit_entry"
+                app:tint="@color/main_purple"
+                app:layout_constraintBottom_toBottomOf="@id/imageBackUpdateView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/imageBackUpdateView"
 
                 />
 
             <EditText
-                android:id="@+id/inputEntryTitle"
+                android:id="@+id/inputEntryTitleUpdateView"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_35sdp"
                 android:layout_marginStart="@dimen/_3sdp"
@@ -81,26 +95,26 @@
                 android:textColor="@color/black"
                 android:textColorHint="@color/colorTextHint"
                 android:textSize="@dimen/_16sdp"
-                app:layout_constraintTop_toBottomOf="@id/imageBack"
-                
+                app:layout_constraintTop_toBottomOf="@id/imageBackUpdateView"
+
                 />
 
             <TextView
-                android:id="@+id/textDateAndTime"
+                android:id="@+id/textDateAndTimeUpdateView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/ubuntu"
                 android:includeFontPadding="false"
                 android:textColor="@color/main_purple"
                 android:textSize="@dimen/_10ssp"
-                app:layout_constraintEnd_toEndOf="@id/inputEntryTitle"
-                app:layout_constraintStart_toStartOf="@id/inputEntryTitle"
-                app:layout_constraintTop_toBottomOf="@id/inputEntryTitle"
+                app:layout_constraintEnd_toEndOf="@id/inputEntryTitleUpdateView"
+                app:layout_constraintStart_toStartOf="@id/inputEntryTitleUpdateView"
+                app:layout_constraintTop_toBottomOf="@id/inputEntryTitleUpdateView"
 
                 />
 
             <EditText
-                android:id="@+id/inputEntrySubtitle"
+                android:id="@+id/inputEntrySubtitleUpdateView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:background="@null"
@@ -117,59 +131,59 @@
                 android:textColorHint="@color/colorTextHint"
                 android:textSize="@dimen/_13ssp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/subtitleIndicator"
-                app:layout_constraintTop_toBottomOf="@id/textDateAndTime"
-                app:layout_constraintBottom_toTopOf="@id/imageCreateRecycler"
+                app:layout_constraintStart_toStartOf="@+id/subtitleIndicatorUpdateView"
+                app:layout_constraintTop_toBottomOf="@id/textDateAndTimeUpdateView"
+                app:layout_constraintBottom_toTopOf="@id/imageCreateRecyclerUpdateView"
                 />
 
             <View
-                android:id="@+id/subtitleIndicator"
+                android:id="@+id/subtitleIndicatorUpdateView"
                 android:layout_width="@dimen/_5sdp"
                 android:layout_height="0dp"
                 android:background="@drawable/background_subtitle_indicator"
-                app:layout_constraintBottom_toBottomOf="@id/inputEntrySubtitle"
+                app:layout_constraintBottom_toBottomOf="@id/inputEntrySubtitleUpdateView"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/inputEntrySubtitle"/>
+                app:layout_constraintTop_toTopOf="@id/inputEntrySubtitleUpdateView"/>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/musicCreateRecycler"
+                android:id="@+id/musicCreateRecyclerUpdateView"
                 android:layout_width="@dimen/_150sdp"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toTopOf="@id/inputEntry"
-                app:layout_constraintTop_toBottomOf="@id/inputEntrySubtitle"
+                app:layout_constraintBottom_toTopOf="@id/inputEntryUpdateView"
+                app:layout_constraintTop_toBottomOf="@id/inputEntrySubtitleUpdateView"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/imageCreateRecycler"
+                app:layout_constraintEnd_toStartOf="@id/imageCreateRecyclerUpdateView"
                 />
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/imageCreateRecycler"
+                android:id="@+id/imageCreateRecyclerUpdateView"
                 android:layout_width="@dimen/_150sdp"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toTopOf="@id/inputEntry"
-                app:layout_constraintTop_toBottomOf="@id/inputEntrySubtitle"
-                app:layout_constraintStart_toEndOf="@id/musicCreateRecycler"
+                app:layout_constraintBottom_toTopOf="@id/inputEntryUpdateView"
+                app:layout_constraintTop_toBottomOf="@id/inputEntrySubtitleUpdateView"
+                app:layout_constraintStart_toEndOf="@id/musicCreateRecyclerUpdateView"
                 app:layout_constraintEnd_toEndOf="parent"
                 />
 
-                <EditText
-                    android:id="@+id/inputEntry"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/_12sdp"
-                    android:layout_marginTop="@dimen/_15sdp"
-                    android:layout_marginEnd="@dimen/_12sdp"
-                    android:layout_marginBottom="@dimen/_15sdp"
-                    android:background="@null"
-                    android:fontFamily="@font/ubuntu"
-                    android:gravity="top"
-                    android:hint="What are the details of your reflection?"
-                    android:importantForAutofill="no"
-                    android:includeFontPadding="false"
-                    android:inputType="textMultiLine"
-                    android:minHeight="@dimen/_100sdp"
-                    android:textColorHint="@color/colorTextHint"
-                    android:textSize="@dimen/_13ssp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/inputEntrySubtitle"/>
+            <EditText
+                android:id="@+id/inputEntryUpdateView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
+                android:layout_marginBottom="@dimen/_15sdp"
+                android:background="@null"
+                android:fontFamily="@font/ubuntu"
+                android:gravity="top"
+                android:hint="What are the details of your reflection?"
+                android:importantForAutofill="no"
+                android:includeFontPadding="false"
+                android:inputType="textMultiLine"
+                android:minHeight="@dimen/_100sdp"
+                android:textColorHint="@color/colorTextHint"
+                android:textSize="@dimen/_13ssp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/inputEntrySubtitleUpdateView"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -177,7 +191,7 @@
 
     </ScrollView>
     <LinearLayout
-        android:id="@+id/layoutQuickActions"
+        android:id="@+id/layoutQuickActionsUV"
         android:layout_width="345dp"
         android:layout_height="62dp"
         android:layout_marginBottom="0dp"
@@ -190,10 +204,10 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/scroll"
+        app:layout_constraintTop_toBottomOf="@id/scrollUpdateView"
         >
         <TextView
-            android:id="@+id/textGenerate"
+            android:id="@+id/textGenerateUpdateView"
             android:layout_width="@dimen/_30sdp"
             android:layout_height="@dimen/_30sdp"
             android:layout_marginStart="0dp"
@@ -208,7 +222,7 @@
 
 
         <ImageView
-            android:id="@+id/entryimageAddImage"
+            android:id="@+id/entryimageAddImageUpdateView"
             android:layout_width="@dimen/_23sdp"
             android:layout_height="@dimen/_23sdp"
             android:layout_marginStart="@dimen/_22sdp"
@@ -218,7 +232,7 @@
             app:tint="@color/colorWhite"></ImageView>
 
         <ImageView
-            android:id="@+id/imageAddEntry"
+            android:id="@+id/imageAddEntryUpdateView"
             android:layout_width="@dimen/_23sdp"
             android:layout_height="@dimen/_23sdp"
             android:layout_marginStart="@dimen/_30sdp"
@@ -229,7 +243,7 @@
             app:tint="@color/colorWhite"></ImageView>
 
         <ImageView
-            android:id="@+id/imageAddMusic"
+            android:id="@+id/imageAddMusicUpdateView"
             android:layout_width="@dimen/_25sdp"
             android:layout_height="@dimen/_25sdp"
             android:layout_marginStart="@dimen/_10sdp"

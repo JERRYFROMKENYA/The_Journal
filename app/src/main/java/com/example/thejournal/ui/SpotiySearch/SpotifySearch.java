@@ -2,6 +2,7 @@ package com.example.thejournal.ui.SpotiySearch;
 
 import static com.example.thejournal.data.SpotifySearchData.convertJsonToMusicList;
 import static com.example.thejournal.data.SpotifySearchData.searchSpotify;
+import static com.example.thejournal.ui.createentry.createJournalEntry.getMusicList;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -108,7 +109,7 @@ public class SpotifySearch extends AppCompatActivity {
     }
 
     public void finishWithIntent(Music music) {
-        Intent intent = new Intent();
+        Intent intent = getIntent();
         intent.putExtra("image", music.getImageResource());
         intent.putExtra("url", music.getMusicUrl());
         intent.putExtra("artist", music.getArtist());

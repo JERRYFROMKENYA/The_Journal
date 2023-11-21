@@ -44,4 +44,5 @@
     <string name="previous">Previous</string>
     <string name="title_activity_journal_entry_editor">JournalEntryEditor</string>
     <string name="title_activity_login2">LoginActivity2</string>
+    <string name="title_activity_viewupdate">viewupdate</string>
 </resources>

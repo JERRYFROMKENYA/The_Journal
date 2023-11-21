@@ -6,6 +6,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Music {
+
+    String position;
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
+
     String artist;
     String title;
 
@@ -14,10 +25,12 @@ public class Music {
     }
 
     public String getTitle() {
+        System.out.println(title+" requested");
         return title;
     }
 
     public String getImageResource() {
+        System.out.println(ImageResource+" requested");
         return ImageResource;
     }
 
